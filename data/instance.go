@@ -1,20 +1,28 @@
-package main
+package data
 
 import (
 	"errors"
 	"fmt"
-	"log"
 
 	"github.com/google/uuid"
 )
 
+var instance = NewInstance()
+
 type Instance struct {
-	l       *log.Logger
 	workers map[uuid.UUID]Worker
 }
 
-func NewInstance(l *log.Logger) *Instance {
-	return &Instance{l, map[uuid.UUID]Worker{}}
+func GetInstance() *Instance {
+	return instance
+} 
+
+func NewInstance() *Instance {
+	return &Instance{map[uuid.UUID]Worker{}}
+}
+
+func (i *Instance) GetWorkers() *map[uuid.UUID]Worker{
+	return &i.workers
 }
 
 func (i *Instance) GetWorker(id uuid.UUID) (*Worker, error) {
@@ -31,15 +39,15 @@ func (i *Instance) CreateWorker() (id uuid.UUID, err error) {
 	if err != nil {
 		return uuid.UUID{}, err
 	}
-	i.workers[w.id] = *w
-	return w.id, nil
+	i.workers[w.Id] = *w
+	return w.Id, nil
 }
 
 func (i *Instance) RemoveWorker(id uuid.UUID) error {
 	// ToDo - Need to check if any active connections before deleting
 	delete(i.workers, id)
 	_, ok := i.workers[id]
-	if ok { 
+	if ok {
 		return nil
 	}
 	return errors.New(fmt.Sprintf("Worker id: %v not removed", id))
