@@ -1,25 +1,24 @@
 package main
 
 import (
-	"net/http"
+	"context"
+	"log"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
+	"github.com/addaboosh/winston-chat/api"
+	"github.com/addaboosh/winston-chat/config"
+	"github.com/addaboosh/winston-chat/store"
 )
 
+
+
 func main() {
-	r := chi.NewRouter()
+	ctx := context.Background()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	r.Use(middleware.RealIP)
-	r.Use(middleware.RequestID)
-	r.Use(middleware.Logger)
-	r.Use(middleware.Recoverer)
-
-	r.Get("/", func (w http.ResponseWriter, r *http.Request){
-		w.Write([]byte("Hallo World"))
-	} )
-	
-	r.Mount("/workers", workersResource{}.Routes())
-
-	http.ListenAndServe(":8123", r)
+	store := store.NewMemoryWorkerStore()
+	server := api.NewServer(cfg.HTTPServer, store)
+	server.Start(ctx)
 }
