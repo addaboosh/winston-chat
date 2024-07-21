@@ -1,23 +1,25 @@
 package main
 
 import (
-	"log"
 	"net/http"
-	"os"
 
-	"github.com/addaboosh/winston-chat/data"
-	"github.com/addaboosh/winston-chat/handlers"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
-		instance := data.GetInstance()	
-	instance.CreateWorker()
-	instance.CreateWorker()
+	r := chi.NewRouter()
 
-	l := log.New(os.Stdout, "winston-chat", log.LUTC)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.RequestID)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+
+	r.Get("/", func (w http.ResponseWriter, r *http.Request){
+		w.Write([]byte("Hallo World"))
+	} )
 	
-	mux := http.NewServeMux()
+	r.Mount("/workers", workersResource{}.Routes())
 
-	mux.Handle("/worker", handlers.NewWorker(l))
-	http.ListenAndServe(":8123", mux)
+	http.ListenAndServe(":8123", r)
 }
