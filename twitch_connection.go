@@ -26,7 +26,7 @@ func CreateTwitchConnection() {
 
 	log.Println("Hello, addboosh!")
 	log.Println("Building connection details....")
-
+ 
 	addr := "irc-ws.chat.twitch.tv:443"
 	u := url.URL{Scheme: "wss", Host: addr}
 

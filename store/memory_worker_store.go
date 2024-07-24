@@ -50,7 +50,7 @@ func (s *MemoryWorkerStore) Create(createWorkerParams CreateWorkerParams) (Worke
 	worker := Worker{
 		Id: newUUID,
 		Name: createWorkerParams.Name,
-		Connections: []Connection{},
+		Connections: map[uuid.UUID]IConnection{},
 	}
 	s.workers[worker.Id] = worker
 	return s.workers[worker.Id], nil 

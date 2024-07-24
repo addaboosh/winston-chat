@@ -19,6 +19,6 @@ func main() {
 	}
 
 	store := store.NewMemoryWorkerStore()
-	server := api.NewServer(cfg.HTTPServer, store)
+	server := api.NewServer(cfg, store)
 	server.Start(ctx)
 }

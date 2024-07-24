@@ -14,7 +14,11 @@ import (
 type workerResponse struct {
 	Id          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
-	Connections []store.Connection `json:"connections"`
+	Connections map[uuid.UUID]Connection `json:"connections"`
+}
+
+func (hr workerResponse) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
 }
 
 func NewWorkerResponse(w store.Worker) workerResponse {
@@ -25,9 +29,7 @@ func NewWorkerResponse(w store.Worker) workerResponse {
 	}
 }
 
-func (hr workerResponse) Render(w http.ResponseWriter, r *http.Request) error {
-	return nil
-}
+// HTTP GET - Get Worker 
 
 func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
@@ -52,6 +54,8 @@ func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, wr)
 }
 
+// HTTP GET - Get All Workers 
+
 func NewWorkerListResponse(workers []store.Worker) []render.Renderer {
 	list := []render.Renderer{}
 	for _, worker := range workers {
@@ -69,6 +73,8 @@ func (s *Server) handleListWorkers(w http.ResponseWriter, r *http.Request) {
 	}
 	render.RenderList(w, r, NewWorkerListResponse(workers))
 }
+
+// HTTP POST - Create New Worker
 
 type CreateWorkerRequest struct {
 	Name string `json:"name"`
@@ -103,6 +109,8 @@ func (s *Server) handleCreateWorker(w http.ResponseWriter, r *http.Request) {
 	render.Render(w,r,NewWorkerResponse(wk))	
 
 }
+
+// HTTP PUT - Update Worker Name
 
 type setNameRequest struct {
 	Name string `json:"name"`
@@ -146,6 +154,8 @@ func (s *Server) handleSetWorkerName(w http.ResponseWriter, r *http.Request) {
 	w.Write(nil)
 }
 
+// HTTP DELETE - Delete single worker by ID
+
 func (s *Server) handleDeleteWorker(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
 	id, err := uuid.Parse(idParam)
@@ -170,7 +180,7 @@ func (s *Server) handleDeleteWorker(w http.ResponseWriter, r *http.Request) {
 	
 }
 
-// WIP HELPER 
+// WIP HELPER - HTTP DELETE - Delete ALL Workers 
 
 func (s *Server) handleDeleteWorkers(w http.ResponseWriter, r *http.Request){
 	data, err := s.store.GetAll()

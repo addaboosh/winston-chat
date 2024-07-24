@@ -15,12 +15,12 @@ import (
 )
 
 type Server struct {
-	cfg config.HTTPServer
+	cfg config.Configuration
 	store store.Interface
 	router *chi.Mux
 }
 
-func NewServer(cfg config.HTTPServer, store store.Interface) *Server {
+func NewServer(cfg config.Configuration, store store.Interface) *Server {
 	srv := &Server{
 		cfg: cfg,
 		store: store,
@@ -37,9 +37,9 @@ func (s *Server) Start(ctx context.Context){
 	server := http.Server{
 		Addr: fmt.Sprintf(":%d", s.cfg.Port),
 		Handler: s.router,
-		IdleTimeout: s.cfg.IdleTimeout,
-		ReadTimeout: s.cfg.ReadTimeout,
-		WriteTimeout: s.cfg.WriteTimeout,
+		IdleTimeout: s.cfg.HTTPServer.IdleTimeout,
+		ReadTimeout: s.cfg.HTTPServer.ReadTimeout,
+		WriteTimeout: s.cfg.HTTPServer.WriteTimeout,
 	}
 
 	shutdownComplete := handleShutdown(func(){
