@@ -6,7 +6,7 @@ import (
 	"github.com/addaboosh/winston-chat/config"
 )
 
-type Connection interface {
+type IConnection interface {
 	Connect()
 	Authenticate()
 

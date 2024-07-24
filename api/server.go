@@ -35,7 +35,7 @@ func NewServer(cfg config.Configuration, store store.Interface) *Server {
 
 func (s *Server) Start(ctx context.Context){
 	server := http.Server{
-		Addr: fmt.Sprintf(":%d", s.cfg.Port),
+		Addr: fmt.Sprintf(":%d", s.cfg.HTTPServer.Port),
 		Handler: s.router,
 		IdleTimeout: s.cfg.HTTPServer.IdleTimeout,
 		ReadTimeout: s.cfg.HTTPServer.ReadTimeout,

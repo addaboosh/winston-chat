@@ -8,9 +8,21 @@ import (
 
 const envPrefix = ""
 
+/*
+NOTE TO SELF - Public propertiese must start with CAPITAL
+*/
+
+
+
 type Configuration struct {
-	HTTPServer
 	TwitchConfiguration
+	HTTPServer
+}
+
+type TwitchConfiguration struct {
+	Url  string `envconfig:"TWITCH_WS_URL" default:"irc-ws.chat.twitch.tv:443"`
+	Nick string `envconfig:"TWITCH_NICK" default:"justinfan821"`
+	Pass string `envconfig:"TWITCH_PASS" default:"ANONAUTH"`
 }
 
 type HTTPServer struct {
@@ -20,11 +32,6 @@ type HTTPServer struct {
 	WriteTimeout time.Duration `envconfig:"HTTP_SERVER_WRITE_TIMEOUT" default:"2s"`
 }
 
-type TwitchConfiguration struct {
-	url  string `envconfig:"TWITCH_WS_URL" default:"irc-ws.chat.twitch.tv:443"`
-	nick string `envconfig:"TWITCH_NICK" default:"justinfan821"`
-	pass string `envconfig:"TWITCH_PASS" default:"ANONAUTH"`
-}
 
 func Load() (Configuration, error) {
 	var cfg Configuration

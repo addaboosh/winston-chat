@@ -12,8 +12,8 @@ import (
 )
 
 type workerResponse struct {
-	Id          uuid.UUID          `json:"id"`
-	Name        string             `json:"name"`
+	Id          uuid.UUID                       `json:"id"`
+	Name        string                          `json:"name"`
 	Connections map[uuid.UUID]store.IConnection `json:"connections"`
 }
 
@@ -29,7 +29,7 @@ func NewWorkerResponse(w store.Worker) workerResponse {
 	}
 }
 
-// HTTP GET - Get Worker 
+// HTTP GET - Get Worker
 
 func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
 	idParam := chi.URLParam(r, "id")
@@ -54,7 +54,7 @@ func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, wr)
 }
 
-// HTTP GET - Get All Workers 
+// HTTP GET - Get All Workers
 
 func NewWorkerListResponse(workers []store.Worker) []render.Renderer {
 	list := []render.Renderer{}
@@ -85,7 +85,7 @@ func (wr *CreateWorkerRequest) Bind(r *http.Request) error {
 }
 
 func (s *Server) handleCreateWorker(w http.ResponseWriter, r *http.Request) {
-	
+
 	data := &CreateWorkerRequest{}
 	if err := render.Bind(r, data); err != nil {
 		fmt.Printf("err: %v data: %v\n", err, data)
@@ -103,10 +103,10 @@ func (s *Server) handleCreateWorker(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrInternalServerError)
 		return
 	}
-	
+
 	w.WriteHeader(201)
 	w.Write(nil)
-	render.Render(w,r,NewWorkerResponse(wk))	
+	render.Render(w, r, NewWorkerResponse(wk))
 
 }
 
@@ -177,19 +177,19 @@ func (s *Server) handleDeleteWorker(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(200)
 	w.Write(nil)
-	
+
 }
 
-// WIP HELPER - HTTP DELETE - Delete ALL Workers 
+// WIP HELPER - HTTP DELETE - Delete ALL Workers
 
-func (s *Server) handleDeleteWorkers(w http.ResponseWriter, r *http.Request){
+func (s *Server) handleDeleteWorkers(w http.ResponseWriter, r *http.Request) {
 	data, err := s.store.GetAll()
 	if err != nil {
-		render.Render(w,r,ErrInternalServerError)
+		render.Render(w, r, ErrInternalServerError)
 		return
 	}
 	for _, w := range data {
 		s.store.Delete(w.Id)
 	}
-	return 
+	return
 }

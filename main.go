@@ -17,7 +17,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	log.Printf("cfg: %v", cfg)
 	store := store.NewMemoryWorkerStore()
 	server := api.NewServer(cfg, store)
 	server.Start(ctx)
