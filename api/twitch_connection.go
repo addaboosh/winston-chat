@@ -32,6 +32,7 @@ const (
 )
 
 type TwitchConnection struct {
+	l          *log.Logger
 	cfg        config.TwitchConfiguration
 	channels   []string
 	interrupt  (chan os.Signal)
@@ -42,6 +43,7 @@ type TwitchConnection struct {
 
 func (s *Server) NewTwitchConnection() *TwitchConnection {
 
+	s.l.Println("Hello from twichconneciton")
 	conn := &TwitchConnection{
 		cfg:       s.cfg.TwitchConfiguration,
 		channels:  make([]string, 0),
@@ -59,26 +61,26 @@ func (t *TwitchConnection) Read() {
 		for {
 			_, message, err := t.connection.ReadMessage()
 			if err != nil {
-				log.Printf("Error Reading msg: %v", err)
+				t.l.Printf("Error Reading msg: %v", err)
 				return
 			}
-			log.Printf("%v", string(message[:]))
+			t.l.Printf("%v", string(message[:]))
 		}
 	}()
 	for {
 		select {
 		case <-t.done:
-			log.Println("we done")
+			t.l.Println("we done")
 			return
 		case <-t.interrupt:
-			log.Println("interrupted you bastard")
+			t.l.Println("interrupted you bastard")
 
 			// Attempt to cleanly close conn by sending a WS close message
 			// and awaiting (w/timeout) for the conn to close.
 			err := t.connection.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 
 			if err != nil {
-				log.Printf("Error closing websocket: %v", err)
+				t.l.Printf("Error closing websocket: %v", err)
 				return
 			}
 			return
@@ -87,18 +89,18 @@ func (t *TwitchConnection) Read() {
 }
 
 func (t *TwitchConnection) Connect() {
-	log.Println("Building Connection Details....")
+	t.l.Println("Building Connection Details....")
 	addr := t.cfg.Url
 	u := url.URL{Scheme: "wss", Host: addr}
 
-	log.Printf("Connecting to %v", u)
+	t.l.Printf("Connecting to %v", u)
 	c, r, err := websocket.DefaultDialer.Dial(u.String(), nil)
 
 	if err != nil {
-		log.Printf("Failed to connect to %s", u.String())
+		t.l.Printf("Failed to connect to %s", u.String())
 	}
 	if r.StatusCode != 200 {
-		log.Printf("HTTP non-200 %d", r.StatusCode)
+		t.l.Printf("HTTP non-200 %d", r.StatusCode)
 	} else {
 		t.connection = c
 		t.status = CONNECTED
@@ -111,7 +113,7 @@ func (t *TwitchConnection) Authenticate() {
 	t.connection.WriteMessage(1, []byte("PASS ANONYAUTH"))
 }
 
-func (t *TwitchConnection) AddChannel(channels []string) {
+func (t *TwitchConnection) JoinChannel(channels []string) {
 	for _, channel := range channels {
 		// Join channel
 		joinmsg := fmt.Sprintf("JOIN #%s", channel)

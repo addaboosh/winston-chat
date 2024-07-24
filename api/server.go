@@ -18,13 +18,15 @@ type Server struct {
 	cfg config.Configuration
 	store store.Interface
 	router *chi.Mux
+	l *log.Logger
 }
 
-func NewServer(cfg config.Configuration, store store.Interface) *Server {
+func NewServer(cfg config.Configuration, store store.Interface, l *log.Logger) *Server {
 	srv := &Server{
 		cfg: cfg,
 		store: store,
 		router: chi.NewRouter(),
+		l: l,
 	}	
 
 	srv.routes()
@@ -34,6 +36,7 @@ func NewServer(cfg config.Configuration, store store.Interface) *Server {
 }
 
 func (s *Server) Start(ctx context.Context){
+	s.l.Printf("Starting server on port %d", s.cfg.Port)
 	server := http.Server{
 		Addr: fmt.Sprintf(":%d", s.cfg.HTTPServer.Port),
 		Handler: s.router,
@@ -44,17 +47,17 @@ func (s *Server) Start(ctx context.Context){
 
 	shutdownComplete := handleShutdown(func(){
 		if err := server.Shutdown(ctx); err != nil {
-			log.Printf("server.Shutdown failed: %v\n", err)
+			s.l.Printf("server.Shutdown failed: %v\n", err)
 		}
 
 	})
-
+	
 	if err := server.ListenAndServe(); err == http.ErrServerClosed {
-			<- shutdownComplete
+		<- shutdownComplete
 	} else {
-		log.Printf("http.ListenAndServe failed: %v", err)
+		s.l.Printf("http.ListenAndServe failed: %v", err)
 	}
-	log.Printf("shutdown gracefrully")
+	s.l.Printf("shutdown gracefully")
 }
 
 func handleShutdown(onShutdownSignal func()) <- chan struct{} {

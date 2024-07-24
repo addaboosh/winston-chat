@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/addaboosh/winston-chat/api"
 	"github.com/addaboosh/winston-chat/config"
@@ -12,13 +13,18 @@ import (
 
 
 func main() {
+	logger := log.New(os.Stdout, "winston-chat - ", log.LUTC)
 	ctx := context.Background()
 	cfg, err := config.Load()
 	if err != nil {
-		log.Fatal(err)
+		logger.Fatal(err)
 	}
-	log.Printf("cfg: %v", cfg)
+	logger.Printf("cfg: %v", cfg)
 	store := store.NewMemoryWorkerStore()
-	server := api.NewServer(cfg, store)
+	server := api.NewServer(cfg, store, logger)
+
 	server.Start(ctx)
+
+
+
 }
