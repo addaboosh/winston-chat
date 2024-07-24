@@ -14,7 +14,7 @@ import (
 type workerResponse struct {
 	Id          uuid.UUID          `json:"id"`
 	Name        string             `json:"name"`
-	Connections map[uuid.UUID]Connection `json:"connections"`
+	Connections map[uuid.UUID]store.IConnection `json:"connections"`
 }
 
 func (hr workerResponse) Render(w http.ResponseWriter, r *http.Request) error {
