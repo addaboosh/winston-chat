@@ -32,7 +32,7 @@ func NewWorkerResponse(w store.Worker) workerResponse {
 // HTTP GET - Get Worker
 
 func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
-	idParam := chi.URLParam(r, "id")
+	idParam := chi.URLParam(r, "workerId")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
 		render.Render(w, r, ErrBadRequest)
@@ -121,7 +121,7 @@ func (wr *setNameRequest) Bind(r *http.Request) error {
 }
 
 func (s *Server) handleSetWorkerName(w http.ResponseWriter, r *http.Request) {
-	idParam := chi.URLParam(r, "id")
+	idParam := chi.URLParam(r, "workerId")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
 		render.Render(w, r, ErrBadRequest)
@@ -157,7 +157,7 @@ func (s *Server) handleSetWorkerName(w http.ResponseWriter, r *http.Request) {
 // HTTP DELETE - Delete single worker by ID
 
 func (s *Server) handleDeleteWorker(w http.ResponseWriter, r *http.Request) {
-	idParam := chi.URLParam(r, "id")
+	idParam := chi.URLParam(r, "workerId")
 	id, err := uuid.Parse(idParam)
 	if err != nil {
 		render.Render(w, r, ErrInternalServerError)

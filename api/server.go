@@ -16,12 +16,12 @@ import (
 
 type Server struct {
 	cfg config.Configuration
-	store store.Interface
+	store store.IWorker
 	router *chi.Mux
 	l *log.Logger
 }
 
-func NewServer(cfg config.Configuration, store store.Interface, l *log.Logger) *Server {
+func NewServer(cfg config.Configuration, store store.IWorker, l *log.Logger) *Server {
 	srv := &Server{
 		cfg: cfg,
 		store: store,

@@ -18,7 +18,7 @@ type SetWorkerNameParams struct {
 	Name string
 }
 
-type Interface interface {
+type IWorker interface {
 	GetAll() ([]Worker, error)
 	GetByID(id uuid.UUID) (Worker, error)
 	Create(createWorkerParams CreateWorkerParams) (Worker, error)

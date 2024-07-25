@@ -15,7 +15,7 @@ func (s *Server) routes() {
 		r.Get("/", s.handleListWorkers)
 		r.Post("/", s.handleCreateWorker)
 		r.Delete("/", s.handleDeleteWorkers)
-		r.Route("/{id}", func(r chi.Router) {
+		r.Route("/{workerId}", func(r chi.Router) {
 			r.Get("/", s.handleGetWorker)
 			r.Put("/", s.handleSetWorkerName)
 			r.Delete("/", s.handleDeleteWorker)
