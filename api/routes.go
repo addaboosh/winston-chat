@@ -12,7 +12,7 @@ func (s *Server) routes() {
 	s.router.Use(middleware.Heartbeat("/health"))
 
 	s.router.Route("/api/workers", func(r chi.Router) {
-		r.Route("/", func(r chi.Router){
+		r.Route("/", func(r chi.Router) {
 			r.Get("/", s.handleListWorkers)
 			r.Post("/", s.handleCreateWorker)
 			r.Delete("/", s.handleDeleteWorkers)
@@ -20,6 +20,8 @@ func (s *Server) routes() {
 		r.Route("/{workerId}", func(r chi.Router) {
 			r.Get("/", s.handleGetWorker)
 			r.Put("/", s.handleSetWorkerName)
+			r.Route("/{connId}", func(r chi.Router) {
+			})
 			r.Delete("/", s.handleDeleteWorker)
 		})
 	})
