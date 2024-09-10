@@ -18,9 +18,9 @@ type Connection interface {
 	Connect()
 	Authenticate()
 
-	AddChat()    //handle n chats
-	RemoveChat() //handle n chats
-	PauseChat()  //handle n chats
+	Add()      //handle n chats
+	Remove()   //handle n chats
+	PauseAll() //handle n chats
 
 	Disconnect()
 	Shutdown()
@@ -106,6 +106,7 @@ func (t *TwitchConnection) Connect() {
 	if r.StatusCode != 200 {
 		t.l.Printf("HTTP non-200 %d", r.StatusCode)
 	} else {
+		t.l.Printf("Connected to twitch")
 		t.conn = c
 		t.status = CONNECTED
 	}

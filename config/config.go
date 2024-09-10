@@ -9,10 +9,8 @@ import (
 const envPrefix = ""
 
 /*
-NOTE TO SELF - Public propertiese must start with CAPITAL
+NOTE TO SELF - Public properties must start with CAPITAL
 */
-
-
 
 type Configuration struct {
 	TwitchConfiguration
@@ -31,7 +29,6 @@ type HTTPServer struct {
 	Port         int           `envconfig:"PORT" default:"5000"`
 	WriteTimeout time.Duration `envconfig:"HTTP_SERVER_WRITE_TIMEOUT" default:"2s"`
 }
-
 
 func Load() (Configuration, error) {
 	var cfg Configuration
