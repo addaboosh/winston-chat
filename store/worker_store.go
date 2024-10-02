@@ -5,8 +5,8 @@ import (
 )
 
 type Worker struct {
-	Id          uuid.UUID    `json:"id"`
-	Name        string       `json:"name"`
+	Id          uuid.UUID                 `json:"id"`
+	Name        string                    `json:"name"`
 	Connections map[uuid.UUID]IConnection `json:"connections"`
 }
 

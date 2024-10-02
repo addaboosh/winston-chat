@@ -28,7 +28,41 @@ func NewWorkerResponse(w store.Worker) workerResponse {
 		Connections: w.Connections,
 	}
 }
+// HTTP POST - Create New Worker
 
+type CreateWorkerRequest struct {
+	Name string `json:"name"`
+}
+
+func (wr *CreateWorkerRequest) Bind(r *http.Request) error {
+	return nil
+}
+
+func (s *Server) handleCreateWorker(w http.ResponseWriter, r *http.Request) {
+
+	data := &CreateWorkerRequest{}
+	if err := render.Bind(r, data); err != nil {
+		fmt.Printf("err: %v data: %v\n", err, data)
+		render.Render(w, r, ErrInternalServerError)
+		return
+	}
+
+	createWorkerParams := store.CreateWorkerParams{
+		Name: data.Name,
+	}
+
+	wk, err := s.store.Create(createWorkerParams)
+
+	if err != nil {
+		render.Render(w, r, ErrInternalServerError)
+		return
+	}
+
+	w.WriteHeader(201)
+	w.Write(nil)
+	render.Render(w, r, NewWorkerResponse(wk))
+
+}
 // HTTP GET - Get Worker
 
 func (s *Server) handleGetWorker(w http.ResponseWriter, r *http.Request) {
@@ -74,41 +108,7 @@ func (s *Server) handleListWorkers(w http.ResponseWriter, r *http.Request) {
 	render.RenderList(w, r, NewWorkerListResponse(workers))
 }
 
-// HTTP POST - Create New Worker
 
-type CreateWorkerRequest struct {
-	Name string `json:"name"`
-}
-
-func (wr *CreateWorkerRequest) Bind(r *http.Request) error {
-	return nil
-}
-
-func (s *Server) handleCreateWorker(w http.ResponseWriter, r *http.Request) {
-
-	data := &CreateWorkerRequest{}
-	if err := render.Bind(r, data); err != nil {
-		fmt.Printf("err: %v data: %v\n", err, data)
-		render.Render(w, r, ErrInternalServerError)
-		return
-	}
-
-	createWorkerParams := store.CreateWorkerParams{
-		Name: data.Name,
-	}
-
-	wk, err := s.store.Create(createWorkerParams)
-
-	if err != nil {
-		render.Render(w, r, ErrInternalServerError)
-		return
-	}
-
-	w.WriteHeader(201)
-	w.Write(nil)
-	render.Render(w, r, NewWorkerResponse(wk))
-
-}
 
 // HTTP PUT - Update Worker Name
 
@@ -188,7 +188,7 @@ func (s *Server) handleDeleteWorkers(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, ErrInternalServerError)
 		return
 	}
-	for _, w := range data {
+	for _, w := range data "wss://eventsub.wss.twitch.tv/ws"{
 		s.store.Delete(w.Id)
 	}
 	return

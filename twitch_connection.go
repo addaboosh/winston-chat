@@ -1,6 +1,6 @@
 package main
 
-import (
+import ( 
 	"fmt"
 	"github.com/gorilla/websocket"
 	"io"
@@ -46,6 +46,7 @@ func CreateTwitchConnection() {
 
 	// Join channel
 	joinmsg := fmt.Sprintf("JOIN #%s", channel)
+
 	c.WriteMessage(1, []byte(joinmsg))
 
 	go func() {

@@ -25,5 +25,4 @@ type TwitchConnection struct {
 	channels []string
 	interrupt (chan os.Signal)
 	done (chan struct{})
-
 }
