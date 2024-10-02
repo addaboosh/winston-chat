@@ -2,7 +2,7 @@ module github.com/addaboosh/winston-chat
 
 go 1.22.2
 
-retract [v0.0.0, v0.0.2]
+retract [v0.0.0-0, v0.0.3]
 
 require (
 	github.com/go-chi/chi/v5 v5.1.0
